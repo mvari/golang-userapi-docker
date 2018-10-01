@@ -7,6 +7,9 @@ src/ directory contains the golang api code and the Dockerfile.
 ### Mysql UserAPI Schema
 mysql/ directory contains the DB schema and the Dockerfile.
 
+### Kubernetes deployment
+k8s/ directory contains Kubernetes deployment yaml files.
+
 ## How to test the service functionality
 curl --header "Content-Type: application/json" --request POST --data '{"name":"test user","age":30}' http://host:8080/user
 
