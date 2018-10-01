@@ -1,0 +1,49 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: userapi
+  labels:
+    app: userapi
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  selector:
+    app: userapi
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userapi
+  labels:
+    app: userapi
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: userapi
+  template:
+    metadata:
+      labels:
+        app: userapi
+    spec:
+      containers:
+      - image: 237110372189.dkr.ecr.us-east-1.amazonaws.com/userapi:1.0.0
+        name: userapi
+        env:
+        - name: APP_DB_USERNAME
+          value: apiuser
+        - name: APP_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-apiuser-pass
+              key: password
+        - name: APP_DB_NAME
+          value: usersapidb
+        - name: APP_DB_ADDRESS
+          value: mysql-userapi
+        ports:
+        - containerPort: 8080
+          name: apiuser

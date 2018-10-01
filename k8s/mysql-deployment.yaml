@@ -1,0 +1,41 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql-userapi
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: userapi
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-userapi
+spec:
+  selector:
+    matchLabels:
+      app: userapi
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: userapi
+    spec:
+      containers:
+      - image: 237110372189.dkr.ecr.us-east-1.amazonaws.com/mysql-userapi:v1
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-root-pass
+              key: password
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+        ports:
+        - containerPort: 3306
+          name: mysql
